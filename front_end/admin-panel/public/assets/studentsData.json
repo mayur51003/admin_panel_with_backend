@@ -1,0 +1,436 @@
+{
+  "students": [
+    {
+      "id": 1,
+      "name": "Rahul Sharma",
+      "age": 20,
+      "class": "B.Sc CS",
+      "roll_no": "CS101",
+      "email": "rahul.sharma@example.com",
+      "marks": { "math": 85, "science": 78, "english": 92 }
+    },
+    {
+      "id": 2,
+      "name": "Ankit Verma",
+      "age": 21,
+      "class": "B.Sc CS",
+      "roll_no": "CS102",
+      "email": "ankit.verma@example.com",
+      "marks": { "math": 92, "science": 88, "english": 85 }
+    },
+    {
+      "id": 3,
+      "name": "Pooja Desai",
+      "age": 20,
+      "class": "B.Sc CS",
+      "roll_no": "CS103",
+      "email": "pooja.desai@example.com",
+      "marks": { "math": 78, "science": 82, "english": 80 }
+    },
+    {
+      "id": 4,
+      "name": "Rohit Kumar",
+      "age": 19,
+      "class": "B.Sc CS",
+      "roll_no": "CS104",
+      "email": "rohit.kumar@example.com",
+      "marks": { "math": 88, "science": 90, "english": 86 }
+    },
+    {
+      "id": 5,
+      "name": "Shreya Patel",
+      "age": 21,
+      "class": "B.Sc CS",
+      "roll_no": "CS105",
+      "email": "shreya.patel@example.com",
+      "marks": { "math": 95, "science": 93, "english": 95 }
+    },
+    {
+      "id": 6,
+      "name": "Aditya Singh",
+      "age": 20,
+      "class": "B.Sc CS",
+      "roll_no": "CS106",
+      "email": "aditya.singh@example.com",
+      "marks": { "math": 82, "science": 79, "english": 88 }
+    },
+    {
+      "id": 7,
+      "name": "Priya Verma",
+      "age": 21,
+      "class": "B.Com",
+      "roll_no": "BC101",
+      "email": "priya.verma@example.com",
+      "marks": { "accounts": 88, "economics": 90, "english": 80 }
+    },
+    {
+      "id": 8,
+      "name": "Sanjay Joshi",
+      "age": 22,
+      "class": "B.Com",
+      "roll_no": "BC102",
+      "email": "sanjay.joshi@example.com",
+      "marks": { "accounts": 92, "economics": 87, "english": 85 }
+    },
+    {
+      "id": 9,
+      "name": "Kavita Rao",
+      "age": 20,
+      "class": "B.Com",
+      "roll_no": "BC103",
+      "email": "kavita.rao@example.com",
+      "marks": { "accounts": 85, "economics": 88, "english": 82 }
+    },
+    {
+      "id": 10,
+      "name": "Manish Gupta",
+      "age": 21,
+      "class": "B.Com",
+      "roll_no": "BC104",
+      "email": "manish.gupta@example.com",
+      "marks": { "accounts": 78, "economics": 80, "english": 77 }
+    },
+    {
+      "id": 11,
+      "name": "Divya Nair",
+      "age": 22,
+      "class": "B.Com",
+      "roll_no": "BC105",
+      "email": "divya.nair@example.com",
+      "marks": { "accounts": 90, "economics": 92, "english": 88 }
+    },
+    {
+      "id": 12,
+      "name": "Vikram Thakur",
+      "age": 21,
+      "class": "B.Com",
+      "roll_no": "BC106",
+      "email": "vikram.thakur@example.com",
+      "marks": { "accounts": 86, "economics": 84, "english": 81 }
+    },
+    {
+      "id": 13,
+      "name": "Amit Singh",
+      "age": 19,
+      "class": "B.A History",
+      "roll_no": "BA101",
+      "email": "amit.singh@example.com",
+      "marks": { "history": 75, "political_science": 82, "english": 70 }
+    },
+    {
+      "id": 14,
+      "name": "Ritu Sharma",
+      "age": 20,
+      "class": "B.A History",
+      "roll_no": "BA102",
+      "email": "ritu.sharma@example.com",
+      "marks": { "history": 88, "political_science": 85, "english": 83 }
+    },
+    {
+      "id": 15,
+      "name": "Kunal Kapoor",
+      "age": 21,
+      "class": "B.A History",
+      "roll_no": "BA103",
+      "email": "kunal.kapoor@example.com",
+      "marks": { "history": 80, "political_science": 78, "english": 82 }
+    },
+    {
+      "id": 16,
+      "name": "Neha Agarwal",
+      "age": 19,
+      "class": "B.A History",
+      "roll_no": "BA104",
+      "email": "neha.agarwal@example.com",
+      "marks": { "history": 92, "political_science": 90, "english": 88 }
+    },
+    {
+      "id": 17,
+      "name": "Rajesh Yadav",
+      "age": 20,
+      "class": "B.A History",
+      "roll_no": "BA105",
+      "email": "rajesh.yadav@example.com",
+      "marks": { "history": 77, "political_science": 80, "english": 75 }
+    },
+    {
+      "id": 18,
+      "name": "Sneha Patil",
+      "age": 22,
+      "class": "B.Sc Physics",
+      "roll_no": "PHY101",
+      "email": "sneha.patil@example.com",
+      "marks": { "physics": 95, "math": 89, "chemistry": 84 }
+    },
+    {
+      "id": 19,
+      "name": "Deepak Reddy",
+      "age": 21,
+      "class": "B.Sc Physics",
+      "roll_no": "PHY102",
+      "email": "deepak.reddy@example.com",
+      "marks": { "physics": 88, "math": 92, "chemistry": 86 }
+    },
+    {
+      "id": 20,
+      "name": "Anjali Iyer",
+      "age": 22,
+      "class": "B.Sc Physics",
+      "roll_no": "PHY103",
+      "email": "anjali.iyer@example.com",
+      "marks": { "physics": 90, "math": 87, "chemistry": 89 }
+    },
+    {
+      "id": 21,
+      "name": "Suresh Menon",
+      "age": 23,
+      "class": "B.Sc Physics",
+      "roll_no": "PHY104",
+      "email": "suresh.menon@example.com",
+      "marks": { "physics": 82, "math": 85, "chemistry": 80 }
+    },
+    {
+      "id": 22,
+      "name": "Priyanka Das",
+      "age": 21,
+      "class": "B.Sc Physics",
+      "roll_no": "PHY105",
+      "email": "priyanka.das@example.com",
+      "marks": { "physics": 93, "math": 90, "chemistry": 91 }
+    },
+    {
+      "id": 23,
+      "name": "Arjun Mehta",
+      "age": 20,
+      "class": "BCA",
+      "roll_no": "CA101",
+      "email": "arjun.mehta@example.com",
+      "marks": { "programming": 91, "math": 76, "english": 85 }
+    },
+    {
+      "id": 24,
+      "name": "Simran Kaur",
+      "age": 21,
+      "class": "BCA",
+      "roll_no": "CA102",
+      "email": "simran.kaur@example.com",
+      "marks": { "programming": 88, "math": 82, "english": 80 }
+    },
+    {
+      "id": 25,
+      "name": "Varun Malhotra",
+      "age": 19,
+      "class": "BCA",
+      "roll_no": "CA103",
+      "email": "varun.malhotra@example.com",
+      "marks": { "programming": 95, "math": 90, "english": 87 }
+    },
+    {
+      "id": 26,
+      "name": "Nikita Jain",
+      "age": 20,
+      "class": "BCA",
+      "roll_no": "CA104",
+      "email": "nikita.jain@example.com",
+      "marks": { "programming": 85, "math": 78, "english": 83 }
+    },
+    {
+      "id": 27,
+      "name": "Karan Chopra",
+      "age": 21,
+      "class": "BCA",
+      "roll_no": "CA105",
+      "email": "karan.chopra@example.com",
+      "marks": { "programming": 92, "math": 88, "english": 86 }
+    },
+    {
+      "id": 28,
+      "name": "Meera Pillai",
+      "age": 20,
+      "class": "BCA",
+      "roll_no": "CA106",
+      "email": "meera.pillai@example.com",
+      "marks": { "programming": 87, "math": 85, "english": 82 }
+    },
+    {
+      "id": 29,
+      "name": "Neha Reddy",
+      "age": 21,
+      "class": "BBA",
+      "roll_no": "BB101",
+      "email": "neha.reddy@example.com",
+      "marks": { "management": 87, "marketing": 81, "english": 79 }
+    },
+    {
+      "id": 30,
+      "name": "Arun Shetty",
+      "age": 22,
+      "class": "BBA",
+      "roll_no": "BB102",
+      "email": "arun.shetty@example.com",
+      "marks": { "management": 90, "marketing": 88, "english": 85 }
+    },
+    {
+      "id": 31,
+      "name": "Tanvi Bhatt",
+      "age": 20,
+      "class": "BBA",
+      "roll_no": "BB103",
+      "email": "tanvi.bhatt@example.com",
+      "marks": { "management": 92, "marketing": 90, "english": 87 }
+    },
+    {
+      "id": 32,
+      "name": "Rahul Dixit",
+      "age": 21,
+      "class": "BBA",
+      "roll_no": "BB104",
+      "email": "rahul.dixit@example.com",
+      "marks": { "management": 85, "marketing": 83, "english": 80 }
+    },
+    {
+      "id": 33,
+      "name": "Swati Pandey",
+      "age": 22,
+      "class": "BBA",
+      "roll_no": "BB105",
+      "email": "swati.pandey@example.com",
+      "marks": { "management": 88, "marketing": 86, "english": 84 }
+    },
+    {
+      "id": 34,
+      "name": "Karan Gupta",
+      "age": 22,
+      "class": "B.Sc Chemistry",
+      "roll_no": "CH101",
+      "email": "karan.gupta@example.com",
+      "marks": { "chemistry": 92, "physics": 78, "math": 80 }
+    },
+    {
+      "id": 35,
+      "name": "Ishita Shah",
+      "age": 21,
+      "class": "B.Sc Chemistry",
+      "roll_no": "CH102",
+      "email": "ishita.shah@example.com",
+      "marks": { "chemistry": 88, "physics": 85, "math": 87 }
+    },
+    {
+      "id": 36,
+      "name": "Vikas Tiwari",
+      "age": 23,
+      "class": "B.Sc Chemistry",
+      "roll_no": "CH103",
+      "email": "vikas.tiwari@example.com",
+      "marks": { "chemistry": 95, "physics": 90, "math": 92 }
+    },
+    {
+      "id": 37,
+      "name": "Riya Bose",
+      "age": 20,
+      "class": "B.Sc Chemistry",
+      "roll_no": "CH104",
+      "email": "riya.bose@example.com",
+      "marks": { "chemistry": 85, "physics": 82, "math": 84 }
+    },
+    {
+      "id": 38,
+      "name": "Siddharth Roy",
+      "age": 22,
+      "class": "B.Sc Chemistry",
+      "roll_no": "CH105",
+      "email": "siddharth.roy@example.com",
+      "marks": { "chemistry": 90, "physics": 88, "math": 86 }
+    },
+    {
+      "id": 39,
+      "name": "Ritika Jain",
+      "age": 19,
+      "class": "B.A English",
+      "roll_no": "EN101",
+      "email": "ritika.jain@example.com",
+      "marks": { "english": 94, "history": 82, "political_science": 76 }
+    },
+    {
+      "id": 40,
+      "name": "Aryan Khanna",
+      "age": 20,
+      "class": "B.A English",
+      "roll_no": "EN102",
+      "email": "aryan.khanna@example.com",
+      "marks": { "english": 88, "history": 85, "political_science": 80 }
+    },
+    {
+      "id": 41,
+      "name": "Sakshi Dubey",
+      "age": 21,
+      "class": "B.A English",
+      "roll_no": "EN103",
+      "email": "sakshi.dubey@example.com",
+      "marks": { "english": 90, "history": 88, "political_science": 84 }
+    },
+    {
+      "id": 42,
+      "name": "Harsh Sinha",
+      "age": 19,
+      "class": "B.A English",
+      "roll_no": "EN104",
+      "email": "harsh.sinha@example.com",
+      "marks": { "english": 85, "history": 80, "political_science": 78 }
+    },
+    {
+      "id": 43,
+      "name": "Aditi Mishra",
+      "age": 20,
+      "class": "B.A English",
+      "roll_no": "EN105",
+      "email": "aditi.mishra@example.com",
+      "marks": { "english": 92, "history": 87, "political_science": 85 }
+    },
+    {
+      "id": 44,
+      "name": "Vikas Yadav",
+      "age": 23,
+      "class": "B.Sc Mathematics",
+      "roll_no": "MA101",
+      "email": "vikas.yadav@example.com",
+      "marks": { "math": 98, "statistics": 91, "physics": 85 }
+    },
+    {
+      "id": 45,
+      "name": "Megha Saxena",
+      "age": 22,
+      "class": "B.Sc Mathematics",
+      "roll_no": "MA102",
+      "email": "megha.saxena@example.com",
+      "marks": { "math": 92, "statistics": 88, "physics": 82 }
+    },
+    {
+      "id": 46,
+      "name": "Neeraj Bansal",
+      "age": 21,
+      "class": "B.Sc Mathematics",
+      "roll_no": "MA103",
+      "email": "neeraj.bansal@example.com",
+      "marks": { "math": 95, "statistics": 90, "physics": 88 }
+    },
+    {
+      "id": 47,
+      "name": "Pallavi Joshi",
+      "age": 23,
+      "class": "B.Sc Mathematics",
+      "roll_no": "MA104",
+      "email": "pallavi.joshi@example.com",
+      "marks": { "math": 90, "statistics": 87, "physics": 84 }
+    },
+    {
+      "id": 48,
+      "name": "Gaurav Goyal",
+      "age": 22,
+      "class": "B.Sc Mathematics",
+      "roll_no": "MA105",
+      "email": "gaurav.goyal@example.com",
+      "marks": { "math": 93, "statistics": 89, "physics": 86 }
+    }
+  ]
+}

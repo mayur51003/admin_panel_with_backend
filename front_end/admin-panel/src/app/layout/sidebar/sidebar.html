@@ -1,0 +1,146 @@
+<aside class="sidebar" [class.collapsed]="collapsed">
+  <!-- Sidebar header -->
+  <div class="sidebar-header">
+    <img src="assets/default-profile.jpg" class="header-logo" />
+    <button class="sidebar-toggle" (click)="toggleSidebar()">
+      <i [class]="'bi ' + (collapsed ? 'bi-chevron-right' : 'bi-chevron-left')"></i>
+    </button>
+  </div>
+
+  <div class="sidebar-content">
+    <ul class="menu-list">
+      <!-- Dashboard -->
+      <li class="menu-item" data-label="Dashboard" (mouseenter)="onMenuItemHover($event)">
+        <a routerLink="/dashboard" class="menu-link " (click)="setActiveMenu('dashboard')"
+          [class.active]="activeMenu === 'dashboard'">
+          <i class="bi bi-speedometer2"></i>
+          <span class="menu-label">Dashboard</span>
+        </a>
+      </li>
+
+      <!-- Departments -->
+      <li class="menu-item" data-label="Departments" (mouseenter)="onMenuItemHover($event)">
+        <a routerLink="/departments" class="menu-link" (click)="setActiveMenu('departments')"
+          [class.active]="activeMenu === 'departments'">
+          <i class="bi bi-bank"></i>
+          <span class="menu-label">Departments</span>
+        </a>
+      </li>
+
+      <!-- About Us -->
+      <li class="menu-item has-submenu" data-label="About Us" [class.open]="openMenu === 'about-us'"
+        (mouseenter)="hoverSubmenu = 'about-us'; onMenuItemHover($event)" (mouseleave)="hoverSubmenu = null">
+
+        <a (click)="toggleMenu('about-us')" class="menu-link" [class.active]="activeMenu === 'about-us'">
+          <i class="bi bi-mortarboard"></i>
+          <span class="menu-label">About Us</span>
+          <i class="bi bi-chevron-down arrow"></i>
+        </a>
+
+        <ul class="submenu">
+          <li><a routerLink="/about-us/principals-desk" (click)="setActiveSubmenu('about-us','principals-desk')"
+              [class.active]="activeSubmenu === 'principals-desk'">Principals Desk</a></li>
+          <li><a routerLink="/about-us/mission-vision" (click)="setActiveSubmenu('about-us','mission-vision')"
+              [class.active]="activeSubmenu === 'mission-vision'">Mission & Vision</a></li>
+          <li><a routerLink="/about-us/code-conduct" (click)="setActiveSubmenu('about-us','code-conduct')"
+              [class.active]="activeSubmenu === 'code-conduct'">Code of Conduct</a></li>
+          <li><a routerLink="/about-us/college-committees" (click)="setActiveSubmenu('about-us','college-committees')"
+              [class.active]="activeSubmenu === 'college-committees'">College Committees</a></li>
+          <li><a routerLink="/about-us/about-college" (click)="setActiveSubmenu('about-us','about-college')"
+              [class.active]="activeSubmenu === 'about-college'">About College</a></li>
+        </ul>
+      </li>
+
+      <!-- Academicss -->
+      <li class="menu-item" data-label="Academics" (mouseenter)="onMenuItemHover($event)">
+        <a routerLink="/academics" class="menu-link" (click)="setActiveMenu('academics')"
+          [class.active]="activeMenu === 'academics'">
+          <i class="bi bi-journal-bookmark"></i>
+          <span class="menu-label">Academics</span>
+        </a>
+      </li>
+
+      <!-- Privacy Policy -->
+      <li class="menu-item" data-label="Privacy Policy" (mouseenter)="onMenuItemHover($event)">
+        <a routerLink="/privacy-policy" class="menu-link" (click)="setActiveMenu('privacy policy')"
+          [class.active]="activeMenu === 'privacy policy'">
+          <i class="bi bi-shield-lock"></i>
+          <span class="menu-label">Privacy Policy</span>
+        </a>
+      </li>
+
+      <!-- Notifications -->
+      <li class="menu-item" data-label="Notifications" (mouseenter)="onMenuItemHover($event)">
+        <a routerLink="/notifications" class="menu-link" (click)="setActiveMenu('notifications')"
+          [class.active]="activeMenu === 'notifications'">
+          <i class="bi bi-bell"></i>
+          <span class="menu-label">Notifications</span>
+        </a>
+      </li>
+
+      <!-- Products -->
+      <li class="menu-item has-submenu" data-label="Products" [class.open]="openMenu === 'products'"
+        (mouseenter)="hoverSubmenu = 'products'; onMenuItemHover($event)" (mouseleave)="hoverSubmenu = null">
+
+        <a (click)="toggleMenu('products')" class="menu-link" [class.active]="activeMenu === 'products'">
+          <i class="bi bi-shop"></i>
+          <span class="menu-label">Products</span>
+          <i class="bi bi-chevron-down arrow"></i>
+        </a>
+
+        <ul class="submenu">
+          <li><a routerLink="/products/all" (click)="setActiveSubmenu('products','all')"
+              [class.active]="activeSubmenu === 'all'">All Products</a></li>
+          <li><a routerLink="/products/add" (click)="setActiveSubmenu('products','add')"
+              [class.active]="activeSubmenu === 'add'">Add Product</a></li>
+          <li><a routerLink="/products/categories" (click)="setActiveSubmenu('products','categories')"
+              [class.active]="activeSubmenu === 'categories'">Categories</a></li>
+        </ul>
+      </li>
+
+      <!-- Students -->
+      <li class="menu-item has-submenu" data-label="Students" [class.open]="openMenu === 'students'"
+        (mouseenter)="hoverSubmenu = 'students'; onMenuItemHover($event)" (mouseleave)="hoverSubmenu = null">
+
+        <a (click)="toggleMenu('students')" class="menu-link" [class.active]="activeMenu === 'students'">
+          <i class="bi bi-people"></i>
+          <span class="menu-label">Students</span>
+          <i class="bi bi-chevron-down arrow"></i>
+        </a>
+
+        <ul class="submenu">
+          <li><a routerLink="/students/active-students" (click)="setActiveSubmenu('students','active-students')"
+              [class.active]="activeSubmenu === 'active-students'">Active Students</a></li>
+          <li><a routerLink="/students/inactive-students" (click)="setActiveSubmenu('students','inactive-students')"
+              [class.active]="activeSubmenu === 'inactive-students'">Inactive Students</a></li>
+          <li><a routerLink="/students/all-students" (click)="setActiveSubmenu('students','all-students')"
+              [class.active]="activeSubmenu === 'all-students'">All Students</a></li>
+        </ul>
+      </li>
+
+      <!-- Settings -->
+      <li class="menu-item" data-label="Settings" (mouseenter)="onMenuItemHover($event)">
+        <a routerLink="/settings" class="menu-link" (click)="setActiveMenu('settings')"
+          [class.active]="activeMenu === 'settings'">
+          <i class="bi bi-gear"></i>
+          <span class="menu-label">Settings</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Sidebar Footer -->
+  <div class="sidebar-footer">
+    <div class="theme-dropdown" [class.open]="isDropdownOpen">
+      <button class="theme-btn" (click)="toggleDropdown($event)">
+        <span class="icon">{{ theme === 'light' ? '☀️' : theme === 'dark' ? '🌙' : '💻' }}</span>
+        <span class="label">{{ theme === 'light' ? 'Light' : theme === 'dark' ? 'Dark' : 'System' }}</span>
+      </button>
+      <ul class="dropdown-menu" *ngIf="isDropdownOpen">
+        <li><a (click)="selectTheme('light')">☀️ Light</a></li>
+        <li><a (click)="selectTheme('dark')">🌙 Dark</a></li>
+        <li><a (click)="selectTheme('system')">💻 System</a></li>
+      </ul>
+    </div>
+  </div>
+</aside>

@@ -1,0 +1,19 @@
+<div class="form-group">
+  <label *ngIf="label">
+    {{ label }}
+    <span class="required" *ngIf="required">*</span>
+  </label>
+
+  <input *ngIf="type !== 'textarea'" [type]="type" [placeholder]="placeholder" [disabled]="disabled"
+    [readonly]="readonly" [required]="required" [ngModel]="value" (ngModelChange)="onInputChange($event)"
+    (blur)="onBlur()" [class.error-input]="hasError" [ngStyle]="type === 'date' ? dateStyles : null"
+    [maxlength]="maxLength" [min]="minValue" />
+
+  <textarea *ngIf="type === 'textarea'" [placeholder]="placeholder" [disabled]="disabled" [readonly]="readonly"
+    [required]="required" [rows]="rows" [ngModel]="value" (ngModelChange)="onInputChange($event)" (blur)="onBlur()"
+    [class.error-input]="hasError" [maxlength]="maxLength"></textarea>
+
+  <div class="error-space" [class.empty]="!hasError">
+    <span *ngIf="hasError">{{ errorMessage }}</span>
+  </div>
+</div>

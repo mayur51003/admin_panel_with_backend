@@ -1,0 +1,389 @@
+<div class="academics-wrapper">
+  <div class="academics-container">
+    <aside class="sidebar">
+      <h1 class="sidebar-title">Academic</h1>
+      <hr>
+      <nav class="vertical-tabs">
+        <button class="vertical-tab-btn" [class.active]="activeMainTab === 'curriculum'"
+          (click)="setMainTab('curriculum')">
+          Curriculum & Syllabus
+        </button>
+        <button class="vertical-tab-btn" [class.active]="activeMainTab === 'calendar'" (click)="setMainTab('calendar')">
+          Academic Calendar
+        </button>
+        <button class="vertical-tab-btn" [class.active]="activeMainTab === 'survey'" (click)="setMainTab('survey')">
+          Student Satisfaction Survey
+        </button>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <div class="content-header">
+        <h1 class="content-title">{{ getHeaderTitle() }}</h1>
+        <button class="btn-add" (click)="openForm()">
+          <i class="bi bi-plus-circle"></i>
+          Add New {{ getButtonTitle() }}
+        </button>
+      </div>
+
+      <div class="data-table-container" *ngIf="activeMainTab === 'curriculum' && curriculumArray.length > 0">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Sr. No.</th>
+              <th>Program Title</th>
+              <th>Category</th>
+              <th>Session</th>
+              <th>Year</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of curriculumArray.controls; let i = index" [formGroup]="$any(item)">
+              <td>{{ i + 1 }}</td>
+              <td>{{ item.get('programTitle')?.value }}</td>
+              <td>{{ item.get('categoryTitle')?.value }}</td>
+              <td>{{ item.get('session')?.value }}</td>
+              <td>{{ item.get('year')?.value }}</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-edit" (click)="onEditCurriculum(i)" title="Edit">
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+                  <button class="btn-delete" (click)="onDeleteCurriculum(i)" title="Delete">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="data-table-container" *ngIf="activeMainTab !== 'curriculum' && academicArray.length > 0">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Sr. No.</th>
+              <th>Title</th>
+              <th>Year</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of academicArray.controls; let i = index" [formGroup]="$any(item)">
+              <td>{{ i + 1 }}</td>
+              <td>{{ item.get('title')?.value }}</td>
+              <td>{{ item.get('year')?.value }}</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-edit" (click)="onEdit(i)" title="Edit">
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+                  <button class="btn-delete" (click)="onDelete(i)" title="Delete">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="empty-state" *ngIf="getCurrentArray().length === 0">
+        <div class="empty-message">
+          <p>No records found. Click "Add New" to create one.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal" *ngIf="showDeleteModal">
+    <div class="modal-content delete-modal">
+      <div class="delete-modal-icon">
+        <i class="bi bi-exclamation-circle"></i>
+      </div>
+      <h3>Delete Record</h3>
+      <p>Are you sure you want to delete this record? This action cannot be undone.</p>
+      <div class="delete-modal-actions">
+        <button class="btn-secondary" (click)="closeDeleteModal()">Cancel</button>
+        <button class="btn-delete" (click)="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" *ngIf="showForm && activeMainTab === 'curriculum'">
+    <div class="modal-content academics-form-modal">
+      <div class="modal-header">
+        <h3>{{ isEditMode ? 'Edit' : 'Add' }} Curriculum & Syllabus</h3>
+        <button class="btn-close" (click)="closeForm()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="tab-content" style="padding: 30px;">
+          <div class="form-section">
+            <label for="categorySelect" class="select-label">Program Categories:</label>
+            <select id="categorySelect" class="form-select"
+              [formControl]="$any(selectionForm.get('selectedCategoryId'))" (change)="onCategoryChange($event)">
+              <option [ngValue]="null" disabled selected>Choose an Option</option>
+              <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.title }}</option>
+            </select>
+            <button class="btn-add add-category-btn" (click)="openCategoryForm()">
+              <i class="bi bi-plus-circle"></i>
+              Add New Category
+            </button>
+
+            <hr class="section-divider">
+
+            <label for="programSelect" class="select-label">Program:</label>
+            <select id="programSelect" class="form-select" [formControl]="$any(selectionForm.get('selectedProgramId'))"
+              (change)="onProgramSelect($event)">
+              <option [ngValue]="null" disabled>
+                {{ selectedCategoryId ? 'Select a program or add new' : 'No Programs Added yet!' }}
+              </option>
+              <option *ngFor="let prog of getFilteredPrograms()" [ngValue]="prog.id">
+                {{ prog.programTitle }}
+              </option>
+            </select>
+            <button class="btn-add add-program-btn" (click)="openProgramForm()" [disabled]="!selectedCategoryId"
+              [class.disabled]="!selectedCategoryId">
+              <i class="bi bi-plus-circle"></i>
+              Add New Program
+            </button>
+
+            <hr class="section-divider">
+
+            <div [formGroup]="currentItemForm">
+              <label for="sessionSelect" class="select-label">Session:</label>
+              <select id="sessionSelect" class="form-select" formControlName="session">
+                <option value="" disabled>Select Session</option>
+                <option *ngFor="let sesn of sessions" [value]="sesn">{{ sesn }}</option>
+              </select>
+              <span class="validation-error" *ngIf="isFieldInvalid(currentItemForm, 'session')">
+                Session is required
+              </span>
+
+              <hr class="section-divider">
+
+              <app-input-field label="Academic Year" placeholder="Enter academic year (e.g., 2024-2025)" type="text"
+                [required]="true" formControlName="year" [showValidation]="isFieldInvalid(currentItemForm, 'year')">
+              </app-input-field>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Upload Program PDF <span class="required">*</span></label>
+              <div class="custom-file-input-wrapper">
+                <input type="file" accept=".pdf" (change)="onProgramFileSelected($event)" #programFileInput
+                  class="file-input-hidden" id="programPdfInput">
+                <button type="button" class="btn-file-select" (click)="programFileInput.click()">
+                  <i class="bi bi-cloud-upload"></i>
+                  <span>Choose PDF File</span>
+                </button>
+                <span class="file-status" *ngIf="getCurriculumPdfFileName()">
+                  <i class="bi bi-check-circle-fill"></i> {{ getCurriculumPdfFileName() }}
+                </span>
+              </div>
+            </div>
+
+            <div class="pdf-preview-section" *ngIf="curriculumPdfPreview">
+              <label class="form-label">Program Preview</label>
+              <div class="pdf-viewer">
+                <iframe [src]="getSafeUrl(curriculumPdfPreview)" type="application/pdf" width="100%" height="400px"
+                  style="border: none;" allow="">
+                </iframe>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn-secondary" (click)="closeForm()">
+                <i class="bi bi-x-circle"></i> Cancel
+              </button>
+              <button type="button" class="btn-primary" (click)="saveCurriculum()">
+                <i class="bi bi-check-circle"></i> {{isEditMode ? "Update Record" : "Save Record"}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" *ngIf="showCategoryForm">
+    <div class="modal-content" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3>Add Category</h3>
+        <button class="btn-close" (click)="closeCategoryForm()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <div class="modal-body" style="padding: 30px;">
+        <div class="form-section" [formGroup]="categoryForm">
+          <app-input-field label="Category Title" placeholder="Enter category title" type="text" [required]="true"
+            formControlName="title" [showValidation]="isFieldInvalid(categoryForm, 'title')">
+          </app-input-field>
+        </div>
+        <div class="form-actions" style="margin-top: 20px;">
+          <button type="button" class="btn-secondary" (click)="closeCategoryForm()">
+            <i class="bi bi-x-circle"></i> Cancel
+          </button>
+          <button type="button" class="btn-primary" (click)="saveCategory()">
+            <i class="bi bi-check-circle"></i> Add Category
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" *ngIf="showProgramForm">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3>{{ isEditProgramMode ? 'Edit' : 'Add' }} Program</h3>
+        <button class="btn-close" (click)="closeProgramForm()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <div class="modal-body" style="padding: 30px;">
+        <div class="form-section" [formGroup]="programForm">
+          <app-input-field label="Program Title" placeholder="Enter program title" type="text" [required]="true"
+            formControlName="programTitle" [showValidation]="isFieldInvalid(programForm, 'programTitle')">
+          </app-input-field>
+
+          <app-input-field label="Category Title" placeholder="Category title" type="text" [required]="true"
+            formControlName="categoryTitle">
+          </app-input-field>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="closeProgramForm()">
+            <i class="bi bi-x-circle"></i> Cancel
+          </button>
+          <button type="button" class="btn-primary" (click)="addProgram()">
+            <i class="bi bi-check-circle"></i> {{ isEditProgramMode ? 'Update' : 'Add' }} Program
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" *ngIf="showForm && activeMainTab === 'calendar'">
+    <div class="modal-content academics-form-modal">
+      <div class="modal-header">
+        <h3>{{ isEditMode ? 'Edit' : 'Add' }} Academic Calendar</h3>
+        <button class="btn-close" (click)="closeForm()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="tab-content">
+          <h4>Academic Calendar Details</h4>
+
+          <div class="form-section" [formGroup]="currentItemForm">
+            <app-input-field label="Calendar Title" placeholder="Enter calendar title" type="text" [required]="true"
+              formControlName="title" [showValidation]="isFieldInvalid(currentItemForm, 'title')">
+            </app-input-field>
+
+            <app-input-field label="Academic Year" placeholder="Enter academic year (e.g., 2024-2025)" type="text"
+              [required]="true" formControlName="year" [showValidation]="isFieldInvalid(currentItemForm, 'year')">
+            </app-input-field>
+
+            <div class="form-group">
+              <label class="form-label">Upload Calendar PDF <span class="required">*</span></label>
+              <div class="custom-file-input-wrapper">
+                <input type="file" accept=".pdf" (change)="onFileSelected($event)" #calendarFileInput
+                  class="file-input-hidden" id="calendarPdfInput">
+                <button type="button" class="btn-file-select" (click)="calendarFileInput.click()">
+                  <i class="bi bi-cloud-upload"></i>
+                  <span>Choose PDF File</span>
+                </button>
+                <span class="file-status" *ngIf="getAcademicPdfFileName()">
+                  <i class="bi bi-check-circle-fill"></i> {{ getAcademicPdfFileName() }}
+                </span>
+              </div>
+            </div>
+
+            <div class="pdf-preview-section" *ngIf="academicPdfPreview">
+              <label class="form-label">Calendar Preview</label>
+              <div class="pdf-viewer">
+                <iframe [src]="getSafeUrl(academicPdfPreview)" type="application/pdf" width="100%" height="400px"
+                  style="border: none;" allow="">
+                </iframe>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" (click)="closeForm()">
+              <i class="bi bi-x-circle"></i> Cancel
+            </button>
+            <button type="button" class="btn-primary" (click)="saveAcademicRecord()">
+              <i class="bi bi-check-circle"></i> Save Calendar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" *ngIf="showForm && activeMainTab === 'survey'">
+    <div class="modal-content academics-form-modal">
+      <div class="modal-header">
+        <h3>{{ isEditMode ? 'Edit' : 'Add' }} Student Satisfaction Survey</h3>
+        <button class="btn-close" (click)="closeForm()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="tab-content">
+          <h4>Student Satisfaction Survey</h4>
+
+          <div class="form-section" [formGroup]="currentItemForm">
+            <app-input-field label="Survey Title" placeholder="Enter survey title" type="text" [required]="true"
+              formControlName="title" [showValidation]="isFieldInvalid(currentItemForm, 'title')">
+            </app-input-field>
+
+            <app-input-field label="Survey Year" placeholder="Enter survey year (e.g., 2024)" type="text"
+              [required]="true" formControlName="year" [showValidation]="isFieldInvalid(currentItemForm, 'year')">
+            </app-input-field>
+
+            <div class="form-group">
+              <label class="form-label">Upload Survey Report <span class="required">*</span></label>
+              <div class="custom-file-input-wrapper">
+                <input type="file" accept=".pdf" (change)="onFileSelected($event)" #surveyFileInput
+                  class="file-input-hidden" id="surveyPdfInput">
+                <button type="button" class="btn-file-select" (click)="surveyFileInput.click()">
+                  <i class="bi bi-cloud-upload"></i>
+                  <span>Choose PDF File</span>
+                </button>
+                <span class="file-status" *ngIf="getAcademicPdfFileName()">
+                  <i class="bi bi-check-circle-fill"></i> {{ getAcademicPdfFileName() }}
+                </span>
+              </div>
+            </div>
+
+            <div class="pdf-preview-section" *ngIf="academicPdfPreview">
+              <label class="form-label">Report Preview</label>
+              <div class="pdf-viewer">
+                <iframe [src]="getSafeUrl(academicPdfPreview)" type="application/pdf" width="100%" height="400px"
+                  style="border: none;" allow="">
+                </iframe>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" (click)="closeForm()">
+              <i class="bi bi-x-circle"></i> Cancel
+            </button>
+            <button type="button" class="btn-primary" (click)="saveAcademicRecord()">
+              <i class="bi bi-check-circle"></i> Save Survey
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

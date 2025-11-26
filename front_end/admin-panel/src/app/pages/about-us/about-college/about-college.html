@@ -1,0 +1,195 @@
+<div class="college-container">
+  <header class="college-header">
+    <div class="header-content">
+      <h1>{{ collegeData.name }}</h1>
+      <p class="tagline">Excellence in Education Since {{ collegeData.established }}</p>
+    </div>
+    <button class="btn-edit-header" (click)="openEditForm()" *ngIf="!showEditForm">
+      <i class="bi bi-pencil-square"></i>
+    </button>
+  </header>
+
+  <section class="image-section">
+
+    <div *ngIf="collegeData.images.length === 1" class="single-image">
+      <img [src]="collegeData.images[currentImageIndex].isExisting 
+           ? collegeData.images[currentImageIndex].url 
+           : collegeData.images[currentImageIndex].preview" [alt]="" />
+    </div>
+
+    <div *ngIf="collegeData.images.length > 1" class="image-slider">
+      <button class="slider-btn prev" (click)="prevImage()" aria-label="Previous image">&#10094;</button>
+      <div class="slider-track">
+        <img [src]="collegeData.images[currentImageIndex].isExisting 
+           ? collegeData.images[currentImageIndex].url 
+           : collegeData.images[currentImageIndex].preview" [alt]="" class="slider-image" />
+      </div>
+      <button class="slider-btn next" (click)="nextImage()" aria-label="Next image">&#10095;</button>
+      <div class="slider-dots">
+        <span *ngFor="let img of collegeData.images; let i = index" class="dot" [class.active]="i === currentImageIndex"
+          (click)="goToImage(i)"></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="college-info">
+    <div class="info-card about-card">
+      <h2>About Our College</h2>
+      <p>{{ collegeData.description }}</p>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-item">
+        <h3>📍 Location</h3>
+        <p>{{ collegeData.location }}</p>
+      </div>
+      <div class="info-item">
+        <h3>🏛️ Established</h3>
+        <p>{{ collegeData.established }}</p>
+      </div>
+    </div>
+
+    <div class="info-card affiliations-card">
+      <h3>🎓 Affiliations</h3>
+      <ul>
+        <li *ngFor="let affiliation of collegeData.affiliations">{{ affiliation }}</li>
+      </ul>
+    </div>
+
+    <div class="info-card highlights-card">
+      <h3>⭐ Highlights</h3>
+      <ul class="highlights-list">
+        <li *ngFor="let highlight of collegeData.highlights">{{ highlight }}</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<div class="modal" *ngIf="showEditForm">
+  <div class="modal-content college-edit-modal">
+    <div class="modal-header">
+      <h3>Edit College Information</h3>
+      <button class="btn-close" (click)="cancelEdit()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <form [formGroup]="collegeForm" (ngSubmit)="saveCollegeData()">
+      <app-input-field label="College Name" placeholder="Enter college name" type="text" formControlName="name"
+        [required]="true" [showValidation]="showValidation">
+      </app-input-field>
+
+      <app-input-field label="About College" placeholder="Enter college description" type="textarea"
+        formControlName="description" [required]="true" [rows]="5" [showValidation]="showValidation">
+      </app-input-field>
+
+      <div class="info-grid-form">
+        <app-input-field label="Location" placeholder="Enter location" type="text" formControlName="location"
+          [required]="true" [showValidation]="showValidation">
+        </app-input-field>
+
+        <app-input-field label="Established Year" placeholder="e.g., 1869" type="text" formControlName="established"
+          [required]="true" [showValidation]="showValidation">
+        </app-input-field>
+      </div>
+
+      <div class="form-group">
+        <label class="college-img">
+          College Images
+          <span class="info-text">(Add one or multiple images)</span>
+        </label>
+        <div class="image-upload-section">
+          <label class="file-input-label" for="collegeImages">
+            <i class="bi bi-cloud-upload"></i>
+            <span>{{ selectedImageIndex !== null ? 'Update Image' : 'Add Image' }}</span>
+          </label>
+          <input type="file" id="collegeImages" accept="image/*" (change)="onImageSelected($event)"
+            style="display: none;" />
+          <span class="uploaded-file-name" *ngIf="uploadedFileName">
+            <i class="bi bi-check-circle-fill"></i> {{ uploadedFileName }}
+          </span>
+        </div>
+
+        <div class="images-preview-list" *ngIf="collegeData.images.length > 0">
+          <div class="image-preview-item" *ngFor="let image of collegeData.images; let i = index">
+            <img [src]="image.isExisting ? image.url : image.preview" [alt]="'College image ' + (i + 1)" />
+            <div class="image-actions">
+              <button type="button" class="btn-image-action edit" (click)="editImage(i)" title="Update">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button type="button" class="btn-image-action delete" (click)="deleteImage(i)" title="Delete">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+            <span class="image-number">{{ i + 1 }}</span>
+          </div>
+        </div>
+        <p class="helper-text" *ngIf="collegeData.images.length === 0">
+          No images added yet. Add at least one image.
+        </p>
+      </div>
+
+      <div class="form-group">
+        <label>
+          Affiliations <span class="required">*</span>
+          <span class="info-text">(Add college affiliations)</span>
+        </label>
+        <div class="add-item-section" [formGroup]="affiliationForm">
+          <app-input-field placeholder="Enter affiliation (e.g., University of Mumbai)" type="text"
+            formControlName="affiliation" [required]="true" [showValidation]="false"
+            [resetTrigger]="resethighlightaffiliationTrigger">
+          </app-input-field>
+          <button type="button" class="btn-add-item" (click)="addAffiliation()">
+            <i class="bi bi-plus-circle"></i><span>Add</span>
+          </button>
+        </div>
+
+        <ul class="items-list" *ngIf="collegeData.affiliations.length > 0">
+          <li *ngFor="let affiliation of collegeData.affiliations; let i = index">
+            <span class="item-text">{{ affiliation }}</span>
+            <button type="button" class="btn-remove-item" (click)="deleteAffiliation(i)" title="Delete">
+              <i class="bi bi-trash-fill"></i>
+            </button>
+          </li>
+        </ul>
+        <p class="helper-text" *ngIf="collegeData.affiliations.length === 0">
+          No affiliations added yet.
+        </p>
+      </div>
+
+      <div class="form-group">
+        <label>
+          Highlights <span class="required">*</span>
+          <span class="info-text">(Add college highlights & achievements)</span>
+        </label>
+        <div class="add-item-section" [formGroup]="highlightForm">
+          <app-input-field placeholder="Enter highlight (e.g., 50+ Years of Academic Excellence)" type="text"
+            formControlName="highlight" [required]="true" [showValidation]="false"
+            [resetTrigger]="resethighlightaffiliationTrigger">
+          </app-input-field>
+          <button type="button" class="btn-add-item" (click)="addHighlight()">
+            <i class="bi bi-plus-circle"></i><span>Add</span>
+          </button>
+        </div>
+
+        <ul class="items-list highlights-items" *ngIf="collegeData.highlights.length > 0">
+          <li *ngFor="let highlight of collegeData.highlights; let i = index">
+            <span class="highlight-icon">✓</span>
+            <span class="item-text">{{ highlight }}</span>
+            <button type="button" class="btn-remove-item" (click)="deleteHighlight(i)" title="Delete">
+              <i class="bi bi-trash-fill"></i>
+            </button>
+          </li>
+        </ul>
+        <p class="helper-text" *ngIf="collegeData.highlights.length === 0">
+          No highlights added yet.
+        </p>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="cancelEdit()">Cancel</button>
+        <button type="submit" class="btn-primary">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>

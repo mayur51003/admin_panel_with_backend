@@ -1,0 +1,67 @@
+<div class="page-header">
+  <h1>Students</h1>
+
+  <div class="active-filters">
+    <div *ngFor="let filter of activeFilters" class="filter-chip">
+      <span>{{ filter.col }}: {{ filter.value }}</span>
+      <button (click)="removeFilterChip(filter.col, filter.value)" aria-label="Remove filter">✕</button>
+    </div>
+  </div>
+
+  <div class="grid-toolbar">
+    <button class="column-manager-toggle" [class.active]="sidebarExpanded" (click)="toggleSidebar()"
+      [attr.aria-label]="sidebarExpanded ? 'Close Column Manager' : 'Open Column Manager'">
+      <i class="bi bi-gear"></i>
+    </button>
+  </div>
+</div>
+
+<div class="page-container">
+  <div class="content-wrapper">
+
+    <div class="content" [class.with-sidebar]="sidebarExpanded">
+      <div class="grid-wrapper" [class]="gridThemeClass">
+
+        <ag-grid-angular #grid [rowData]="displayedRows" [columnDefs]="colDefs" [defaultColDef]="defaultColDef"
+          [pagination]="true" [paginationPageSize]="20" (gridReady)="onGridReady($event)" class="ag-grid-container">
+        </ag-grid-angular>
+
+      </div>
+    </div>
+
+    <div class="column-manager-sidebar" [class.expanded]="sidebarExpanded">
+      <div class="sidebar-header">
+        <h3>Column Manager</h3>
+        <button class="close-btn" (click)="toggleSidebar()" aria-label="Close">✕</button>
+      </div>
+
+      <div class="sidebar-content">
+        <div class="search-container">
+          <input type="text" placeholder="Search columns..." [(ngModel)]="searchText" class="search-input" />
+        </div>
+
+        <div class="columns-list">
+          <div *ngFor="let col of filteredColumns()" class="column-item" draggable="true"
+            (dragstart)="onDragStart($event, col)" (dragover)="onDragOver($event)" (drop)="onDrop($event, col)"
+            [class.dragging]="draggedColumn === col">
+            <div class="column-control">
+              <input type="checkbox" [id]="'col-' + col.field" [checked]="!col.hide" (change)="toggleColumn(col)" />
+              <label [for]="'col-' + col.field" class="column-name">{{ col.headerName || col.field }}</label>
+            </div>
+          </div>
+          <div *ngIf="filteredColumns().length === 0" class="no-columns">
+            <p>No columns found</p>
+          </div>
+        </div>
+
+        <div class="sidebar-actions">
+          <button class="btn btn-outline" (click)="showAllColumns()">Show All</button>
+          <button class="btn btn-outline" (click)="hideAllColumns()">Hide All</button>
+          <button class="btn btn-primary" (click)="resetColumns()">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="sidebarExpanded" class="sidebar-overlay" (click)="toggleSidebar()"></div>
+  </div>
+</div>

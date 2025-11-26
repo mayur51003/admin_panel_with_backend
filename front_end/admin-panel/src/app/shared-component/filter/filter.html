@@ -1,0 +1,36 @@
+<div class="column-filter">
+  <span class="column-header-name" [title]="columnName">{{ columnName }}</span>
+
+  <button class="filter-icon" [class.active]="filterState[columnName]?.selectedValues?.size > 0"
+    (click)="toggleFilter($event)" type="button" [attr.aria-label]="'Toggle filter for ' + columnName">
+    <i class="bi bi-filter"></i>
+  </button>
+</div>
+
+<ng-template #dropdownTemplate>
+  <div class="filter-dropdown-portal">
+    <div class="search-container">
+      <input #filterInput type="text" [(ngModel)]="filterText" (input)="onFilterInput()"
+        [placeholder]="'Search ' + columnName + '...'" class="column-filter-input" autocomplete="off" />
+
+      <button *ngIf="filterText" (click)="clearSearch($event)" type="button" class="clear-filter-btn"
+        aria-label="Clear search">
+        <i class="bi bi-x"></i>
+      </button>
+    </div>
+
+    <ul *ngIf="filteredValues.length" class="filter-values">
+      <li *ngFor="let v of filteredValues">
+        <label (click)="onLabelClick(v, $event)">
+          <input type="checkbox" [checked]="filterState[columnName]?.selectedValues?.has(v)"
+            (change)="onCheckboxChange(v, $any($event.target).checked)" />
+          <span class="value-text">{{ v }}</span>
+        </label>
+      </li>
+    </ul>
+
+    <div *ngIf="!filteredValues.length" class="no-values">
+      <p>No values found</p>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,142 @@
+/* ----------------- Theme Variables ----------------- */
+html.light {
+  --bg-color: #ffffff;
+  --sidebar-bg: #f5f5f5;
+  --text-color: #000000;
+  --hover-bg: rgba(0, 0, 0, 0.05);
+  --active-bg: rgba(0, 0, 0, 0.1);
+  --arrow-color: #000000;
+  --scrollbar-thumb: #c1c1c1;
+  --scrollbar-thumb-hover: #888888;
+  --scrollbar-track: #f5f5f5;
+  --filter-active-bg: #bcdafb;
+  --filter-active-color: #1d96fa;
+
+  /* Added mappings */
+  --background-color: var(--bg-color, #ffffff);
+  --primary-text-color: var(--text-color, #1f2937);
+  --secondary-text-color: var(--text-color, #6b7280);
+  --border-color: var(--hover-bg, #e0e0e0);
+  --header-background: var(--sidebar-bg, #ffffff);
+  --sidebar-background: var(--sidebar-bg, #ffffff);
+  --sidebar-header-background: var(--sidebar-bg, #f9fafb);
+  --input-background: var(--bg-color, #ffffff);
+  --item-background: var(--bg-color, #ffffff);
+  --item-hover-background: var(--hover-bg, #f9fafb);
+  --hover-background: var(--hover-bg, #f3f4f6);
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --danger-color: #ef4444;
+  --danger-hover: #dc2626;
+
+  /* Gradients */
+  --gradient-bg: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+
+  /* Shadow Theme */
+  --shadow-color: rgba(0, 0, 0, 0.2);
+
+}
+
+html.dark {
+  --bg-color: #121212;
+  --sidebar-bg: #1e1e1e;
+  --text-color: #ffffff;
+  --hover-bg: rgba(255, 255, 255, 0.1);
+  --active-bg: rgba(255, 255, 255, 0.2);
+  --arrow-color: #ffffff;
+  --scrollbar-thumb: #444444;
+  --scrollbar-thumb-hover: #666666;
+  --scrollbar-track: #1e1e1e;
+  --filter-active-bg: #174062;
+  --filter-active-color: #1d96fa;
+
+  /* Added mappings */
+  --background-color: var(--bg-color, #121212);
+  --primary-text-color: var(--text-color, #f9fafb);
+  --secondary-text-color: var(--text-color, #9ca3af);
+  --border-color: var(--hover-bg, #374151);
+  --header-background: var(--sidebar-bg, #1e1e1e);
+  --sidebar-background: var(--sidebar-bg, #1e1e1e);
+  --sidebar-header-background: var(--sidebar-bg, #111827);
+  --input-background: var(--bg-color, #121212);
+  --item-background: var(--bg-color, #121212);
+  --item-hover-background: var(--hover-bg, #374151);
+  --hover-background: var(--hover-bg, #374151);
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --danger-color: #ef4444;
+  --danger-hover: #dc2626;
+
+  /* Gradients */
+  --gradient-bg: linear-gradient(135deg, #000000 0%, #434343 100%);
+
+  /* Shadow Theme */
+  --shadow-color: rgba(225, 225, 225, 0.2);
+
+}
+
+/* ----------------- Body & Content ----------------- */
+body,
+.main-content {
+  background-color: var(--background-color);
+  background: var(--gradient-bg);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ----------------- Sidebar ----------------- */
+.sidebar {
+  background-color: var(--sidebar-background);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ----------------- ag-Grid ----------------- */
+.ag-theme-alpine,
+.ag-theme-alpine-dark {
+  --ag-background-color: var(--background-color);
+  --ag-header-background-color: var(--sidebar-background);
+  --ag-odd-row-background-color: var(--item-hover-background);
+  --ag-row-hover-color: var(--hover-background);
+  --ag-foreground-color: var(--text-color);
+}
+
+/* ----------------- Scrollbars ----------------- */
+.ag-theme-alpine::-webkit-scrollbar,
+.ag-theme-alpine-dark::-webkit-scrollbar,
+.sidebar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.ag-theme-alpine::-webkit-scrollbar-track,
+.ag-theme-alpine-dark::-webkit-scrollbar-track,
+.sidebar::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+.ag-theme-alpine::-webkit-scrollbar-thumb,
+.ag-theme-alpine-dark::-webkit-scrollbar-thumb,
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 5px;
+  border: 2px solid var(--scrollbar-track);
+}
+
+.ag-theme-alpine::-webkit-scrollbar-thumb:hover,
+.ag-theme-alpine-dark::-webkit-scrollbar-thumb:hover,
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}
+
+.ag-theme-alpine,
+.ag-theme-alpine-dark,
+.sidebar {
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  scrollbar-width: thin;
+}
+
+/* ----------------- Select Dropdown Arrow ----------------- */
+.select-wrapper::after {
+  color: var(--arrow-color);
+}

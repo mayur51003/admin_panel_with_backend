@@ -1,0 +1,23 @@
+.layout {
+    display: flex;
+    height: 100dvh;
+    user-select: none;
+    background-color: var(--background-color);
+}
+
+.main-content {
+    user-select: none;
+    flex: 1;
+    padding: 20px;
+    height: 100%; // ✅ 100vh ki jagah 100%
+    overflow-y: auto; // ✅ agar content bada ho to scroll aayega
+    background-color: var(--background-color);
+    box-sizing: border-box;
+    /* Hide scrollbar */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}

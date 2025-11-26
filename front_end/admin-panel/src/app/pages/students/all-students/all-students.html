@@ -1,0 +1,103 @@
+<div class="header-container">
+    <h2 class="title">Students</h2>
+
+    <div class="search-container">
+        <input type="text" placeholder="Search Students...">
+    </div>
+
+    <div class="actions">
+        <div class="select-wrapper">
+            <select class="select">
+                <option value="" disabled selected> Export As</option>
+                <option value="pdf">Export as PDF</option>
+                <option value="excel">Export as Excel</option>
+                <option value="csv">Export as CSV</option>
+            </select>
+        </div>
+
+        <button class="btnAddStd">Add Students</button>
+    </div>
+
+</div>
+
+
+@defer {
+<table class="student-table">
+    <thead>
+        <tr>
+            <th>Profile</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Roll No</th>
+            <th>Class</th>
+            <th>Course</th>
+            <th>Phone</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><img src="assets/default-profile.jpg" class="profile-pic" alt="Profile" width="35" height="35"
+                    style="border-radius: 50%; object-fit: cover; display: flexbox;"></td>
+            <td>John Doe</td>
+            <td>16</td>
+            <td>23</td>
+            <td>10th Grade</td>
+            <td>Science</td>
+            <td>+1234567890</td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- <p class="no-data"> No Students Records!!!.</p> -->
+<!-- <p class="no-data">No students with name found!</p> -->
+
+<div class="pagination">
+    <button>Prev</button>
+    <button>Next</button>
+</div>
+} @placeholder (minimum 1000ms) {
+<table class="student-table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Roll No</th>
+            <th>Class</th>
+            <th>Course</th>
+            <th>Phone</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="skel">
+            <td colspan="6">
+                <div class="skeleton"></div>
+            </td>
+        </tr>
+        <tr class="skel">
+            <td colspan="6">
+                <div class="skeleton"></div>
+            </td>
+        </tr>
+        <tr class="skel">
+            <td colspan="6">
+                <div class="skeleton"></div>
+            </td>
+        </tr>
+        <tr class="skel">
+            <td colspan="6">
+                <div class="skeleton"></div>
+            </td>
+        </tr>
+        <tr class="skel">
+            <td colspan="6">
+                <div class="skeleton"></div>
+            </td>
+        </tr>
+        <tr class="skel">
+            <td colspan="6">
+                <div class="skeleton"></div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+}

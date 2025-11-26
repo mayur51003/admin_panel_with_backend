@@ -1,0 +1,41 @@
+<div class="form-group">
+    <label *ngIf="label">
+        {{ label }}
+        <span class="required" *ngIf="required">*</span>
+    </label>
+
+    <div class="input-wrapper" [class.error-input]="hasError">
+        <div class="tags-container" *ngIf="selectedCourses.length > 0">
+            <span class="course-tag" *ngFor="let course of selectedCourses; let i = index">
+                <span class="tag-text">{{ course }}</span>
+                <button type="button" class="remove-tag" (click)="removeTag(i)" tabindex="-1" title="Remove">
+                    <i class="bi bi-x"></i>
+                </button>
+            </span>
+        </div>
+
+        <input #searchInput type="text" class="course-input" [value]="searchQuery" (input)="onInputChange($event)"
+            (focus)="onFocus()" (blur)="onBlur()" (keydown)="onKeyDown($event)"
+            [placeholder]="selectedCourses.length > 0 ? 'Add another course...' : placeholder" autocomplete="off" />
+    </div>
+
+    <div class="error-space" [class.empty]="!hasError">
+        <span *ngIf="hasError">{{ errorMessage }}</span>
+    </div>
+
+    <div class="autocomplete-dropdown" *ngIf="showDropdown && filteredCourses.length > 0">
+        <div class="dropdown-item" *ngFor="let course of filteredCourses; let i = index"
+            [class.highlighted]="i === highlightedIndex" (click)="selectCourse(course)"
+            (mouseenter)="highlightedIndex = i">
+            <i class="bi bi-mortarboard-fill"></i>
+            <span>{{ course }}</span>
+        </div>
+    </div>
+
+    <div class="autocomplete-dropdown no-results" *ngIf="showDropdown && searchQuery && filteredCourses.length === 0">
+        <div class="dropdown-item">
+            <i class="bi bi-info-circle"></i>
+            <span>Press Enter to add "{{ searchQuery }}"</span>
+        </div>
+    </div>
+</div>

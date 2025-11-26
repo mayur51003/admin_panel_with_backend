@@ -1,0 +1,634 @@
+<div class="department-container">
+  <div class="header">
+    <h1>Department Management</h1>
+    <button class="btn-primary" (click)="openForm()">Add New Department</button>
+  </div>
+
+  <div class="table-container" *ngIf="departments.length > 0">
+    <table>
+      <thead>
+        <tr>
+          <th>Sr No.</th>
+          <th>Department</th>
+          <th>HOD</th>
+          <th>No. of Faculties</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let department of departments; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ department.department_name }}</td>
+          <td>{{ department.hod?.hod_name || '-' }}</td>
+          <td>{{ getFacultyCount(department) }}</td>
+          <td>
+            <span class="status-badge" [class.active]="department.status === 'active'"
+              [class.inactive]="department.status !== 'active'">
+              {{ department.status === 'active' ? 'Active' : 'Inactive' }}
+            </span>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button class="btn-action btn-edit" (click)="editDepartment(department)" title="Edit">
+                <i class="bi bi-pencil-square"></i>
+              </button>
+              <button class="btn-action btn-delete" (click)="deleteDepartment(department.id)" title="Delete">
+                <i class="bi bi-trash-fill"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="empty-state" *ngIf="departments.length === 0">
+    <table>
+      <thead>
+        <tr>
+          <th>Sr No.</th>
+          <th>Department</th>
+          <th>HOD</th>
+          <th>No. of Faculties</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colspan="7" class="empty-message">
+            No departments created yet. Click "Add New Department" to get started.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="modal" *ngIf="showDeleteModal">
+    <div class="modal-content delete-modal">
+      <div class="delete-modal-icon">
+        <i class="bi bi-exclamation-circle"></i>
+      </div>
+      <h3>Delete Department</h3>
+      <p>Are you sure you want to delete this department? This action cannot be undone.</p>
+      <div class="delete-modal-actions">
+        <button class="btn-secondary" (click)="closeDeleteModal()">Cancel</button>
+        <button class="btn-delete" (click)="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" *ngIf="showForm">
+    <div class="modal-content department-form-modal">
+      <div class="modal-header">
+        <h3>{{ isEditMode ? 'Edit Department' : 'Add Department' }}</h3>
+        <button class="btn-close" (click)="closeForm()">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-layout">
+          <div class="side-menu">
+            <ul>
+              <li [class.active]="activeTab === 'about'" (click)="setActiveTab('about')">About</li>
+              <li [class.active]="activeTab === 'hod'" (click)="setActiveTab('hod')">HOD Desk</li>
+              <li [class.active]="activeTab === 'course'" (click)="setActiveTab('course')">Courses</li>
+              <li [class.active]="activeTab === 'faculty'" (click)="setActiveTab('faculty')">Faculty</li>
+              <li [class.active]="activeTab === 'valueaddedprogram'" (click)="setActiveTab('valueaddedprogram')">
+                Value Added Programs
+              </li>
+            </ul>
+          </div>
+
+          <div class="tab-content">
+
+            <div *ngIf="activeTab === 'about'" [formGroup]="departmentForm">
+              <h4>About Department</h4>
+
+              <app-input-field label="Department Name" placeholder="Enter department name" type="text" [required]="true"
+                formControlName="name" [showValidation]="isInvalid('name')">
+              </app-input-field>
+
+              <app-input-field label="Tagline" placeholder="Enter a tagline" type="text" formControlName="tagline">
+              </app-input-field>
+
+              <app-input-field label="About Department" placeholder="Write about the department..." type="textarea"
+                [rows]="4" formControlName="about">
+              </app-input-field>
+
+              <div class="form-group">
+                <label class="college-img">
+                  Department Images
+                  <span class="info-text">(Add one or multiple images)</span>
+                </label>
+                <div class="image-upload-section">
+                  <label class="file-input-label" for="departmentImages">
+                    <i class="bi bi-cloud-upload"></i>
+                    <span>{{ selectedDeptImageIndex !== null ? 'Replace Image' : 'Add Image' }}</span>
+                  </label>
+                  <input type="file" id="departmentImages" accept="image/*" (change)="onDepartmentImagesSelect($event)"
+                    class="file-input-hidden" #deptFileInput />
+                </div>
+
+                <div class="images-preview-grid" *ngIf="departmentForm.get('images')?.value?.length > 0">
+                  <div class="image-preview-item"
+                    *ngFor="let image of departmentForm.get('images')?.value; let i = index">
+                    <img [src]="image" [alt]="'Department image ' + (i + 1)" />
+                    <div class="image-actions">
+                      <button type="button" class="btn-image-action edit" (click)="editDepartmentImage(i)"
+                        title="Update">
+                        <i class="bi bi-pencil"></i>
+                      </button>
+                      <button type="button" class="btn-image-action delete" (click)="removeDepartmentImage(i)"
+                        title="Delete">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </div>
+                    <span class="image-number">{{ i + 1 }}</span>
+                  </div>
+                </div>
+                <p class="helper-text" *ngIf="!departmentForm.get('images')?.value?.length">
+                  No images added yet. Add at least one image.
+                </p>
+              </div>
+
+              <div class="form-group">
+                <label>Status</label>
+                <div class="status-toggle">
+                  <label class="switch">
+                    <input type="checkbox" formControlName="isActive" />
+                    <span class="slider"></span>
+                  </label>
+                  <span class="status-label">{{ departmentForm.get('isActive')?.value ? 'Active' : 'Inactive' }}</span>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button class="btn-secondary" type="button" (click)="saveCurrentProgress()">
+                  <i class="bi bi-save"></i> Save
+                </button>
+                <button class="btn-secondary" type="button" (click)="saveAndNext()">
+                  Save & Next <i class="bi bi-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+
+
+            <div *ngIf="activeTab === 'hod'" [formGroup]="departmentForm">
+              <h4>HOD Details</h4>
+
+              <div class="current-hod-section" formGroupName="hod">
+                <h5>Current HOD</h5>
+
+                <app-input-field label="HOD Name" placeholder="Enter HOD's full name" type="text" [required]="true"
+                  formControlName="name" [showValidation]="isInvalid('hod.name')">
+                </app-input-field>
+
+                <app-input-field label="Qualification" placeholder="e.g., Ph.D. in Computer Science" type="text"
+                  [required]="true" formControlName="qualification" [showValidation]="isInvalid('hod.qualification')">
+                </app-input-field>
+
+                <app-input-field label="Description" placeholder="Brief description about HOD..." type="textarea"
+                  [required]="true" [rows]="4" formControlName="description"
+                  [showValidation]="isInvalid('hod.description')">
+                </app-input-field>
+
+                <div class="form-group">
+                  <label>HOD Photo</label>
+
+                  <div class="custom-file-input-wrapper">
+                    <input type="file" id="hodPhoto" accept="image/*" (change)="onHodPhotoSelect($event)"
+                      class="file-input-hidden" #hodFileInput />
+                    <button type="button" class="btn-file-select" (click)="hodFileInput.click()">
+                      <i class="bi bi-cloud-upload"></i>
+                      <span>Choose Photo</span>
+                    </button>
+                    <span class="file-status" *ngIf="departmentForm.get('hod.photo')?.value">
+                      <i class="bi bi-check-circle-fill"></i> Photo uploaded
+                    </span>
+                  </div>
+
+                  <div *ngIf="departmentForm.get('hod.photo')?.value" class="photo-preview">
+                    <img [src]="departmentForm.get('hod.photo')?.value" alt="HOD Photo" />
+                    <button type="button" class="btn-remove-photo" (click)="removeHodPhoto()">
+                      <i class="bi bi-x"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="previous-hods-section">
+                <div class="section-header">
+                  <h5>Previous HODs</h5>
+                </div>
+
+                <div class="previous-hod-form" [formGroup]="previousHodForm">
+                  <app-input-field label="Name" placeholder="Enter previous HOD's name" type="text" [required]="true"
+                    formControlName="name" [showValidation]="isPreviousHodInvalid('name')"
+                    [resetTrigger]="preHodFormResetTriggered">
+                  </app-input-field>
+
+                  <app-input-field label="Tenure (e.g., 2015-2020)" placeholder="Enter working years" type="text"
+                    [required]="true" formControlName="tenure" [showValidation]="isPreviousHodInvalid('tenure')"
+                    [resetTrigger]="preHodFormResetTriggered">
+                  </app-input-field>
+
+                  <button type="button" class="btn-add" (click)="addPreviousHod()">
+                    <i class="bi bi-plus-circle"></i>
+                    {{ editingPreviousHodIndex !== null ? 'Update HOD' : 'Add Previous HOD' }}
+                  </button>
+
+                  <button *ngIf="editingPreviousHodIndex !== null" type="button" class="btn-secondary"
+                    (click)="cancelEditPreviousHod()">
+                    <i class="bi bi-x-circle"></i> Cancel
+                  </button>
+                </div>
+
+                <div *ngIf="previousHodsArray.length > 0" class="previous-hods-list">
+                  <h6>Added Previous HODs ({{ previousHodsArray.length }})</h6>
+                  <ul class="hods-list">
+                    <li *ngFor="let prevHod of previousHodsArray.controls; let i = index" class="hod-item">
+                      <div class="hod-info">
+                        <div class="hod-icon">
+                          <i class="bi bi-person-badge"></i>
+                        </div>
+                        <div class="hod-details">
+                          <div class="hod-name">{{ prevHod.value.name }}</div>
+                          <div class="hod-tenure">
+                            <i class="bi bi-calendar-range"></i> {{ prevHod.value.tenure }}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="hod-actions">
+                        <button type="button" class="btn-update" (click)="editPreviousHod(i)">
+                          <i class="bi bi-pencil"></i> Update
+                        </button>
+                        <button type="button" class="btn-remove" (click)="removePreviousHod(i)">
+                          <i class="bi bi-trash"></i> Remove
+                        </button>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+
+                <div *ngIf="previousHodsArray.length === 0" class="no-data-message">
+                  <i class="bi bi-info-circle"></i>
+                  <p>No previous HODs added yet. Fill the form above to add previous HODs.</p>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button class="btn-secondary" type="button" (click)="setActiveTab('about')">
+                  <i class="bi bi-arrow-left"></i> Back
+                </button>
+                <button class="btn-secondary" type="button" (click)="saveAndNext()">
+                  Save & Next <i class="bi bi-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <div *ngIf="activeTab === 'faculty'">
+              <h4>
+                {{ editingFacultyIndex !== null ? 'Update Faculty Details' : 'Add Faculty Details' }}
+              </h4>
+
+              <div class="faculty-form-section" [formGroup]="facultyForm">
+                <app-input-field label="Faculty Name" placeholder="Enter Faculty's full name" type="text"
+                  [required]="true" formControlName="name" [showValidation]="isFacultyInvalid('name')"
+                  [resetTrigger]="facultyFormResetTrigger">
+                </app-input-field>
+
+                <app-input-field label="Faculty Email" placeholder="Enter Faculty's Email address" type="email"
+                  [required]="true" formControlName="email" [showValidation]="isFacultyInvalid('email')"
+                  [resetTrigger]="facultyFormResetTrigger">
+                </app-input-field>
+
+                <app-input-field label="Faculty DOB" placeholder="Enter Faculty's Date of Birth" type="date"
+                  [required]="true" formControlName="dob" [ngStyle]="getDateInputStyles()"
+                  [showValidation]="isFacultyInvalid('dob')" [resetTrigger]="facultyFormResetTrigger">
+                </app-input-field>
+
+                <app-input-field label="Designation" placeholder="e.g., Assistant Professor" type="text"
+                  [required]="true" formControlName="designation" [showValidation]="isFacultyInvalid('designation')"
+                  [resetTrigger]="facultyFormResetTrigger">
+                </app-input-field>
+
+                <app-input-field label="Joining Date" type="date" [ngStyle]="getDateInputStyles()" [required]="true"
+                  formControlName="joiningDate" [showValidation]="isFacultyInvalid('joiningDate')"
+                  [resetTrigger]="facultyFormResetTrigger">
+                </app-input-field>
+
+                <app-input-field label="Qualification" placeholder="e.g., Ph.D. in Computer Science" type="text"
+                  [required]="true" formControlName="qualification" [showValidation]="isFacultyInvalid('qualification')"
+                  [resetTrigger]="facultyFormResetTrigger">
+                </app-input-field>
+
+                <app-input-field label="Nature of Association" placeholder="e.g., Regular / Temporary" type="text"
+                  [required]="true" formControlName="natureOfAssociation"
+                  [showValidation]="isFacultyInvalid('natureOfAssociation')" [resetTrigger]="facultyFormResetTrigger">
+                </app-input-field>
+
+                <app-input-field label="Teaching Experience" placeholder="Enter total Teaching experience in years"
+                  type="number" [required]="true" formControlName="teachingExp"
+                  [showValidation]="isFacultyInvalid('teachingExp')" [resetTrigger]="facultyFormResetTrigger">
+                </app-input-field>
+
+                <app-course-autocomplete label="Courses Taught" placeholder="Start typing or select courses..."
+                  [required]="true" [availableCourses]="availableCourses" [(selectedCourses)]="selectedFacultyCourses"
+                  (selectedCoursesChange)="onCourseSelectionChanged($event)"
+                  [showValidation]="facultyFormTouched && selectedFacultyCourses.length === 0 && editingFacultyIndex === null"
+                  [resetTrigger]="facultyFormResetTrigger">
+                </app-course-autocomplete>
+
+                <app-input-field label="Achievements"
+                  placeholder="Enter achievements (e.g., awards, recognitions, publications)" type="text"
+                  formControlName="achievements">
+                </app-input-field>
+
+                <app-input-field label="Industrial Experience" placeholder="Enter total Industrial experience in years"
+                  type="number" formControlName="industrialExp">
+                </app-input-field>
+
+                <app-input-field label="Additional Information" placeholder="Brief information about Faculty..."
+                  type="textarea" [rows]="4" formControlName="additionalInfo">
+                </app-input-field>
+
+                <div class="form-group">
+                  <label>Faculty Photo</label>
+
+                  <div class="custom-file-input-wrapper">
+                    <input type="file" id="facultyPhoto" accept="image/*" (change)="onFacultyPhotoSelect($event)"
+                      class="file-input-hidden" #facultyFileInput />
+                    <button type="button" class="btn-file-select" (click)="facultyFileInput.click()">
+                      <i class="bi bi-cloud-upload"></i>
+                      <span>Choose Photo</span>
+                    </button>
+                    <span class="file-status" *ngIf="facultyForm.get('photo')?.value">
+                      <i class="bi bi-check-circle-fill"></i> Photo uploaded
+                    </span>
+                  </div>
+
+                  <div *ngIf="facultyForm.get('photo')?.value" class="photo-preview">
+                    <img [src]="facultyForm.get('photo')?.value" alt="Faculty Photo" />
+                    <button type="button" class="btn-remove-photo" (click)="removeFacultyPhoto()">
+                      <i class="bi bi-x"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button class="btn-primary" type="button" (click)="addFacultyToDepartment()">
+                    <i class="bi" [ngClass]="editingFacultyIndex !== null ? 'bi-arrow-repeat' : 'bi-plus-circle'"></i>
+                    {{ editingFacultyIndex !== null ? 'Update Faculty' : 'Add Faculty' }}
+                  </button>
+                  <button *ngIf="editingFacultyIndex !== null" class="btn-secondary" type="button"
+                    (click)="cancelEditFaculty()">
+                    <i class="bi bi-x-circle"></i> Cancel Edit
+                  </button>
+                </div>
+              </div>
+
+              <div *ngIf="facultyArray.length > 0" style="margin-top: 30px">
+                <h5 style="margin-bottom: 15px; color: var(--text-color); font-size: 16px; font-weight: 600;">
+                  Added Faculty Members ({{ facultyArray.length }})
+                </h5>
+                <ul class="members-list">
+                  <li *ngFor="let faculty of facultyArray.controls; let i = index">
+                    <div class="member-info">
+                      <img *ngIf="faculty.value.photo" [src]="faculty.value.photo" alt="{{ faculty.value.name }}"
+                        class="member-photo-small" />
+                      <div *ngIf="!faculty.value.photo" class="member-photo-placeholder">
+                        <i class="bi bi-person-circle"></i>
+                      </div>
+                      <div class="member-details">
+                        <div class="top-row">
+                          <span class="member-name"><strong>{{ faculty.value.name }}</strong></span>
+                          <span class="vertical-line"></span>
+                          <span class="member-designation">{{ faculty.value.designation }}</span>
+                        </div>
+                        <div class="qualification">
+                          <strong>Qualification:</strong> {{ faculty.value.qualification }}
+                        </div>
+                        <div class="contact-row">
+                          <span><strong>Email:</strong> {{ faculty.value.email }}</span>
+                        </div>
+                        <div class="contact-row">
+                          <span><strong>Joining:</strong> {{ faculty.value.joiningDate | date : 'dd/MM/yyyy' }}</span>
+                          <span><strong>Teaching Exp:</strong> {{ faculty.value.teachingExp }} years</span>
+                        </div>
+                        <div class="contact-row">
+                          <span><strong>Course:</strong> {{ faculty.value.courseTaught }}</span>
+                          <span *ngIf="faculty.value.industrialExp > 0">
+                            <strong>Industrial Exp:</strong> {{ faculty.value.industrialExp }} years
+                          </span>
+                        </div>
+                        <div class="contact-row" *ngIf="faculty.value.natureOfAssociation">
+                          <span><strong>Nature:</strong> {{ faculty.value.natureOfAssociation }}</span>
+                        </div>
+                        <div class="contact-row" *ngIf="faculty.value.achievements">
+                          <strong>Achievements:</strong> {{ faculty.value.achievements }}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="member-actions">
+                      <button type="button" class="btn-update" (click)="editFacultyFromDepartment(i)">
+                        <i class="bi bi-pencil"></i> Update
+                      </button>
+                      <button type="button" class="btn-remove" (click)="removeFacultyFromDepartment(i)">
+                        <i class="bi bi-trash"></i> Remove
+                      </button>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div *ngIf="facultyArray.length === 0" class="empty-faculty-message">
+                <i class="bi bi-person-plus"
+                  style="font-size: 48px; color: var(--secondary-text-color); margin-bottom: 10px"></i>
+                <p>No faculty members added yet. Fill the form above to add faculty members.</p>
+              </div>
+
+              <div class="form-actions" style="margin-top: 30px;">
+                <button class="btn-secondary" type="button" (click)="setActiveTab('hod')">
+                  <i class="bi bi-arrow-left"></i> Back
+                </button>
+                <button class="btn-secondary" type="button" (click)="saveAndNext()">
+                  Save & Next <i class="bi bi-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <div *ngIf="activeTab === 'course'">
+              <h4>
+                {{ editingCourseIndex !== null ? 'Update Course Details' : 'Add Course Details' }}
+              </h4>
+
+              <div class="course-form-section" [formGroup]="courseForm">
+                <app-input-field label="Course Title" placeholder="Enter course name (e.g., B.Tech Computer Science)"
+                  type="text" [required]="true" formControlName="title" [showValidation]="isCourseInvalid('title')"
+                  [resetTrigger]="courseFormResetTrigger">
+                </app-input-field>
+
+                <app-input-field label="Intake" placeholder="Enter total intake (e.g., 60)" type="number"
+                  [required]="true" formControlName="intake" [showValidation]="isCourseInvalid('intake')"
+                  [resetTrigger]="courseFormResetTrigger">
+                </app-input-field>
+
+                <app-input-field label="Duration (in months)" placeholder="Enter duration in months" type="number"
+                  [required]="true" formControlName="duration" [showValidation]="isCourseInvalid('duration')"
+                  [resetTrigger]="courseFormResetTrigger">
+                </app-input-field>
+
+                <div class="form-actions">
+                  <button class="btn-primary" type="button" (click)="addCourseToDepartment()">
+                    <i class="bi" [ngClass]="editingCourseIndex !== null ? 'bi-arrow-repeat' : 'bi-plus-circle'"></i>
+                    {{ editingCourseIndex !== null ? 'Update Course' : 'Add Course' }}
+                  </button>
+                  <button *ngIf="editingCourseIndex !== null" class="btn-secondary" type="button"
+                    (click)="cancelEditCourse()">
+                    <i class="bi bi-x-circle"></i> Cancel Edit
+                  </button>
+                </div>
+              </div>
+
+              <div *ngIf="coursesArray.length > 0" style="margin-top: 30px">
+                <h5 style="margin-bottom: 15px; color: var(--text-color); font-size: 16px; font-weight: 600;">
+                  Added Courses ({{ coursesArray.length }})
+                </h5>
+                <ul class="courses-list">
+                  <li *ngFor="let course of coursesArray.controls; let i = index">
+                    <div class="course-info">
+                      <div class="course-icon">
+                        <i class="bi bi-mortarboard-fill"></i>
+                      </div>
+                      <div class="course-details">
+                        <div class="course-title">{{ course.value.title }}</div>
+                        <div class="course-meta">
+                          <span><i class="bi bi-clock"></i> {{ course.value.duration }} months</span>
+                          <span><i class="bi bi-people"></i> Intake: {{ course.value.intake }}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="course-actions">
+                      <button type="button" class="btn-update" (click)="editCourseFromDepartment(i)">
+                        <i class="bi bi-pencil"></i> Update
+                      </button>
+                      <button type="button" class="btn-remove" (click)="removeCourseFromDepartment(i)">
+                        <i class="bi bi-trash"></i> Remove
+                      </button>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div *ngIf="coursesArray.length === 0" class="empty-faculty-message">
+                <i class="bi bi-mortarboard"
+                  style="font-size: 48px; color: var(--secondary-text-color); margin-bottom: 10px"></i>
+                <p>No courses added yet. Fill the form above to add courses.</p>
+              </div>
+
+              <div class="form-actions" style="margin-top: 30px;">
+                <button class="btn-secondary" type="button" (click)="setActiveTab('faculty')">
+                  <i class="bi bi-arrow-left"></i> Back
+                </button>
+                <button class="btn-secondary" type="button" (click)="saveAndNext()">
+                  Save & Next <i class="bi bi-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <div *ngIf="activeTab === 'valueaddedprogram'">
+              <h4>
+                {{ editingValueAddedProgramIndex !== null ? 'Update Value Added Program' : 'Add Value Added Program' }}
+              </h4>
+
+              <div class="program-form-section" [formGroup]="valueAddedProgramForm">
+                <app-input-field label="Program Title" placeholder="Enter value added program name" type="text"
+                  [required]="true" formControlName="title" [showValidation]="isValueAddedProgramInvalid('title')"
+                  [resetTrigger]="valueaddedprogramFormResetTrigger">
+                </app-input-field>
+
+                <app-input-field label="Co-ordinator Name" placeholder="Enter name of the program coordinator"
+                  type="text" [required]="true" formControlName="co_ordinator"
+                  [showValidation]="isValueAddedProgramInvalid('co_ordinator')"
+                  [resetTrigger]="valueaddedprogramFormResetTrigger">
+                </app-input-field>
+
+                <app-input-field label="Intake" placeholder="Enter total intake (e.g., 60)" type="number"
+                  [required]="true" formControlName="intake" [showValidation]="isValueAddedProgramInvalid('intake')"
+                  [resetTrigger]="valueaddedprogramFormResetTrigger">
+                </app-input-field>
+
+                <app-input-field label="Duration (in months)" placeholder="Enter duration in months" type="number"
+                  [required]="true" formControlName="duration" [showValidation]="isValueAddedProgramInvalid('duration')"
+                  [resetTrigger]="valueaddedprogramFormResetTrigger">
+                </app-input-field>
+
+                <div class="form-actions">
+                  <button class="btn-primary" type="button" (click)="addValueAddedProgramToDepartment()">
+                    <i class="bi"
+                      [ngClass]="editingValueAddedProgramIndex !== null ? 'bi-arrow-repeat' : 'bi-plus-circle'"></i>
+                    {{ editingValueAddedProgramIndex !== null ? 'Update Program' : 'Add Program' }}
+                  </button>
+                  <button *ngIf="editingValueAddedProgramIndex !== null" class="btn-secondary" type="button"
+                    (click)="cancelEditValueAddedProgram()">
+                    <i class="bi bi-x-circle"></i> Cancel Edit
+                  </button>
+                </div>
+              </div>
+
+              <div *ngIf="valueAddedProgramsArray.length > 0" style="margin-top: 30px">
+                <h5 style="margin-bottom: 15px; color: var(--text-color); font-size: 16px; font-weight: 600;">
+                  Added Value Added Programs ({{ valueAddedProgramsArray.length }})
+                </h5>
+                <ul class="programs-list">
+                  <li *ngFor="let vap of valueAddedProgramsArray.controls; let i = index">
+                    <div class="program-info">
+                      <div class="program-icon vap-icon">
+                        <i class="bi bi-award-fill"></i>
+                      </div>
+                      <div class="program-details">
+                        <div class="program-title">{{ vap.value.title }}</div>
+                        <div class="program-meta">
+                          <span><i class="bi bi-person-badge"></i> {{ vap.value.co_ordinator }}</span>
+                          <span><i class="bi bi-clock"></i> {{ vap.value.duration }} months</span>
+                          <span><i class="bi bi-people"></i> Intake: {{ vap.value.intake }}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="program-actions">
+                      <button type="button" class="btn-update" (click)="editValueAddedProgramFromDepartment(i)">
+                        <i class="bi bi-pencil"></i> Update
+                      </button>
+                      <button type="button" class="btn-remove" (click)="removeValueAddedProgramFromDepartment(i)">
+                        <i class="bi bi-trash"></i> Remove
+                      </button>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div *ngIf="valueAddedProgramsArray.length === 0" class="empty-faculty-message">
+                <i class="bi bi-award"
+                  style="font-size: 48px; color: var(--secondary-text-color); margin-bottom: 10px"></i>
+                <p>No value added programs added yet. Fill the form above to add programs.</p>
+              </div>
+
+              <div class="form-actions" style="margin-top: 30px;">
+                <button class="btn-secondary" type="button" (click)="setActiveTab('course')">
+                  <i class="bi bi-arrow-left"></i> Back
+                </button>
+                <button class="btn-primary" type="button" (click)="saveDepartment()">
+                  <i class="bi bi-check-circle"></i> Save Department
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

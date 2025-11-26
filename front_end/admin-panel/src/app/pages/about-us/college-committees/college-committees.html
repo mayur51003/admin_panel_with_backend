@@ -1,0 +1,206 @@
+<div class="committees-container">
+    <div class="header">
+        <h1>College Committees</h1>
+        <button class="btn-primary" (click)="openForm()">Add New Committee</button>
+    </div>
+
+    <div class="modal" *ngIf="showDeleteModal">
+        <div class="modal-content delete-modal">
+            <div class="delete-modal-icon">
+                <i class="bi bi-exclamation-circle"></i>
+            </div>
+            <h3>Delete Committee?</h3>
+            <p>Are you sure you want to delete this committee? This action cannot be undone.</p>
+            <div class="delete-modal-actions">
+                <button class="btn-secondary" (click)="closeDeleteModal()">Cancel</button>
+                <button class="btn-delete" (click)="confirmDelete()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" *ngIf="showForm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>{{ isEditMode ? 'Edit Committee' : 'Create New Committee' }}</h3>
+                <button class="btn-close" (click)="closeForm()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <div class="model-content">
+                <form [formGroup]="committeeForm" (ngSubmit)="saveCommittee()">
+
+                    <app-input-field label="Committee Title" [formControl]="$any(committeeForm.get('title'))"
+                        placeholder="Enter committee title" [required]="true"
+                        [showValidation]="showCommitteeValidation">
+                    </app-input-field>
+
+
+                    <app-input-field label="Description" type="textarea"
+                        [formControl]="$any(committeeForm.get('description'))" placeholder="Enter committee description"
+                        [rows]="4" [required]="true" [showValidation]="showCommitteeValidation">
+                    </app-input-field>
+
+                    <div class="form-group checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" formControlName="status"
+                                [checked]="committeeForm.get('status')?.value"
+                                (change)="committeeForm.patchValue({status: $event.target.checked})" />
+                            <span>Active Status</span>
+                        </label>
+                    </div>
+
+                    <div class="form-group member-label">
+                        <label>Members</label>
+                        <div class="member-input-grid" [formGroup]="memberForm">
+
+                            <app-input-field [formControl]="$any(memberForm.get('name'))" placeholder="Member name"
+                                [required]="true" [showValidation]="showMemberValidation"
+                                [resetTrigger]="resetMemberTrigger">
+                            </app-input-field>
+
+
+                            <app-input-field [formControl]="$any(memberForm.get('designation'))"
+                                placeholder="Designation" [required]="true" [showValidation]="showMemberValidation"
+                                [resetTrigger]="resetMemberTrigger">
+                            </app-input-field>
+
+                            <app-input-field [formControl]="$any(memberForm.get('qualification'))"
+                                placeholder="Qualification (optional)" [showValidation]="showMemberValidation"
+                                [resetTrigger]="resetMemberTrigger">
+                            </app-input-field>
+
+                            <app-input-field type="email" [formControl]="$any(memberForm.get('email'))"
+                                placeholder="Email (optional)" [showValidation]="showMemberValidation"
+                                [resetTrigger]="resetMemberTrigger">
+                            </app-input-field>
+
+                            <app-input-field [formControl]="$any(memberForm.get('phone'))"
+                                placeholder="Phone (optional)" [showValidation]="showMemberValidation"
+                                [resetTrigger]="resetMemberTrigger">
+                            </app-input-field>
+
+                            <div class="file-input-wrapper">
+                                <div class="file-upload-row">
+                                    <label class="file-input-label" for="memberPhotoNew">
+                                        <i class="bi bi-cloud-upload"></i> Upload Profile Pic
+                                    </label>
+                                    <input type="file" id="memberPhotoNew" accept="image/*"
+                                        (change)="onFileSelected($event)" />
+                                    <span class="uploaded-file-name truncate" *ngIf="uploadedFileName">
+                                        <i class="bi bi-check-circle-fill"></i> {{ uploadedFileName }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn-add" (click)="addMemberToNewCommittee()">
+                                {{ editingMemberIndex !== null ? 'Update' : 'Add' }}
+                            </button>
+                        </div>
+
+                        <ul class="members-list" *ngIf="members.length > 0">
+                            <li *ngFor="let member of members; let i = index">
+                                <div class="member-info">
+                                    <img *ngIf="member.photoPreview || member.photo" [src]="getMemberPhoto(member)"
+                                        alt="{{ member.name }}" class="member-photo-small" />
+                                    <div *ngIf="!member.photoPreview && !member.photo" class="member-photo-placeholder">
+                                        <i class="bi bi-person-circle"></i>
+                                    </div>
+                                    <div class="member-details">
+                                        <div class="top-row">
+                                            <span class="member-name"><strong>{{ member.name }}</strong></span>
+                                            <span class="vertical-line"></span>
+                                            <span class="member-designation">{{ member.designation }}</span>
+                                        </div>
+                                        <div class="qualification">
+                                            <strong>Qualification:</strong> {{ member.qualification || 'NA' }}
+                                        </div>
+                                        <div class="contact-row">
+                                            <span><strong>Email:</strong> {{ member.email || 'NA' }}</span>
+                                            <span><strong>Phone:</strong> {{ member.phone || 'NA' }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="member-actions">
+                                    <button type="button" class="btn-update" (click)="editMemberFromNewCommittee(i)">
+                                        Update
+                                    </button>
+                                    <button type="button" class="btn-remove" (click)="removeMemberFromNewCommittee(i)">
+                                        Remove
+                                    </button>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" (click)="closeForm()">Cancel</button>
+                        <button type="submit" class="btn-primary">
+                            {{ isEditMode ? 'Update Committee' : 'Save Committee' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-container" *ngIf="committees.length > 0">
+        <table>
+            <thead>
+                <tr>
+                    <th>Sr No.</th>
+                    <th>Committee Title</th>
+                    <th>Total Members</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let committee of committees; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ committee.title }}</td>
+                    <td>{{ committee.members.length }}</td>
+                    <td>
+                        <span class="status-badge" [class.active]="committee.status"
+                            [class.inactive]="!committee.status">
+                            {{ committee.status ? 'Active' : 'Inactive' }}
+                        </span>
+                    </td>
+                    <td (click)="$event.stopPropagation()">
+                        <div class="action-buttons">
+                            <button class="btn-action btn-edit" (click)="editCommittee(committee.id)" title="Edit">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            <button class="btn-action btn-delete" (click)="openDeleteModal(committee.id)"
+                                title="Delete">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="empty-state" *ngIf="committees.length === 0">
+        <table>
+            <thead>
+                <tr>
+                    <th>Sr No.</th>
+                    <th>Committee Title</th>
+                    <th>Total Members</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="5" class="empty-message">
+                        No committees created yet. Click "Add New Committee" to get started.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

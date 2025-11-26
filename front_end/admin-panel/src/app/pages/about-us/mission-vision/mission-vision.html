@@ -1,0 +1,67 @@
+<div>
+  <div class="header">
+    <div class="header-content">
+      <h1>Mission & Vision</h1>
+      <p>Our College's Commitment to Excellence in Education</p>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div *ngIf="!isEditing" class="admin-controls">
+      <button class="btn-action edit-btn" (click)="startEditing()">
+        <i class="bi bi-pencil-square"></i>
+      </button>
+    </div>
+
+    <div *ngIf="isEditing" class="action-buttons">
+      <button class="save-btn" title="Save" (click)="saveMissionVision()" [disabled]="isSaving">
+        <i class="bi" [ngClass]="isSaving ? 'bi-arrow-repeat spin' : 'bi-save'"></i>
+      </button>
+      <button class="cancel-btn" title="Cancel" (click)="cancelEditing()" [disabled]="isSaving">
+        <i class="bi bi-x-circle"></i>
+      </button>
+    </div>
+
+    <form [formGroup]="missionVisionForm">
+      <div class="section mission-section">
+        <div class="section-header">
+          <span class="icon">📚</span>
+          <h2>Our Mission</h2>
+        </div>
+
+        <p *ngIf="!isEditing" class="section-text">{{ missionText }}</p>
+
+        <app-input-field *ngIf="isEditing" label="" type="textarea" placeholder="Enter mission statement..." [rows]="4"
+          [required]="true" [formControl]="missionControl" [showValidation]="showValidation"></app-input-field>
+      </div>
+
+      <div class="section vision-section">
+        <div class="section-header">
+          <span class="icon">💡</span>
+          <h2>Our Vision</h2>
+        </div>
+
+        <p *ngIf="!isEditing" class="section-text">{{ visionText }}</p>
+
+        <app-input-field *ngIf="isEditing" label="" type="textarea" placeholder="Enter vision statement..." [rows]="4"
+          [required]="true" [formControl]="visionControl" [showValidation]="showValidation"></app-input-field>
+      </div>
+    </form>
+
+    <div *ngIf="showSuccessPopup" class="success-popup-overlay">
+      <div class="success-popup">
+        <div class="success-popup-header">
+          <div class="icon-container">
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+          <h3>Success!</h3>
+        </div>
+        <p class="success-popup-message">{{ successMessage }}</p>
+        <button (click)="showSuccessPopup = false" class="success-popup-button">
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

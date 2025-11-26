@@ -1,0 +1,144 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h2>Dashboard</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon primary-bg"><i class="bi bi-people-fill"></i></div>
+        <div class="stat-content">
+          <div class="stat-label">Total Students</div>
+          <div class="stat-value">{{ totalStudents }}</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon success-bg"><i class="bi bi-award-fill"></i></div>
+        <div class="stat-content">
+          <div class="stat-label">Avg Score</div>
+          <div class="stat-value">{{ avgScore }}%</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon warning-bg"><i class="bi bi-graph-up-arrow"></i></div>
+        <div class="stat-content">
+          <div class="stat-label">Top Score</div>
+          <div class="stat-value">{{ topScore }}</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon secondary-bg"><i class="bi bi-journal-text"></i></div>
+        <div class="stat-content">
+          <div class="stat-label">Subjects</div>
+          <div class="stat-value">{{ totalSubjects }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+
+    <div class="chart-card">
+      <h3><i class="bi bi-bar-chart-fill" style="color: #4dabf7;"></i> Subject Averages </h3>
+      <canvas id="barChart"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <h3><i class="bi bi-pie-chart-fill" style="color: #51cf66;"></i> Age Distribution</h3>
+      <canvas id="pieChart"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <h3><i class="bi bi-pie-chart-fill" style="color: #ffd43b;"></i> Class Distribution</h3>
+      <canvas id="doughnutChart"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <h3><i class="bi bi bi-graph-up" style="color: #ff6b6b;"></i> Class-wise Performance</h3>
+      <canvas id="stackedBarChart"></canvas>
+    </div>
+  </div>
+
+  <div class="toppers-grid">
+    <div class="topper-card">
+      <h3>
+        <span><i class="bi bi-trophy-fill"></i> Top 3 Performers</span>
+
+        <!-- Reactive Form for Filters -->
+        <form [formGroup]="filterForm" class="filters">
+
+          <!-- Class Select -->
+          <select class="form-select" formControlName="selectedClass" aria-label="Select Class">
+            <option value="">All Classes</option>
+            @for (cls of classes; track cls) {
+            <option [value]="cls">{{ cls }}</option>
+            }
+          </select>
+
+          <!-- Subject Select -->
+          <select class="form-select" formControlName="selectedSubject" aria-label="Select Subject">
+            <option value="">All Subjects</option>
+            @for (subject of availableSubjects; track subject) {
+            <option [value]="subject">{{ subject | titlecase }}</option>
+            }
+          </select>
+
+          <!-- Reset Button -->
+          <button type="button" class="btn btn-danger" (click)="resetFilters()" [disabled]="isResetDisabled()">
+            <i class="bi bi-arrow-clockwise"></i> Reset
+          </button>
+
+        </form>
+      </h3>
+
+      <div class="podium-wrapper">
+        <div class="podium-container">
+
+          @if (toppers[1]) {
+          <div class="podium-position second">
+            <div class="position-figure">
+              <div class="avatar">{{ toppers[1].name.charAt(0).toUpperCase() }}</div>
+              <div class="rank-badge silver">2</div>
+            </div>
+            <div class="podium-box silver-box">
+              <div class="student-info">
+                <h4>{{ toppers[1].name }}</h4>
+                <p class="score">{{ toppers[1].score.toFixed(1) }}%</p>
+              </div>
+            </div>
+          </div>
+          }
+
+          @if (toppers[0]) {
+          <div class="podium-position first">
+            <div class="position-figure">
+              <div class="avatar">{{ toppers[0].name.charAt(0).toUpperCase() }}</div>
+              <div class="rank-badge gold">1</div>
+              <div class="crown">👑</div>
+            </div>
+            <div class="podium-box gold-box">
+              <div class="student-info">
+                <h4>{{ toppers[0].name }}</h4>
+                <p class="score">{{ toppers[0].score.toFixed(1) }}%</p>
+              </div>
+            </div>
+          </div>
+          }
+
+          @if (toppers[2]) {
+          <div class="podium-position third">
+            <div class="position-figure">
+              <div class="avatar">{{ toppers[2].name.charAt(0).toUpperCase() }}</div>
+              <div class="rank-badge bronze">3</div>
+            </div>
+            <div class="podium-box bronze-box">
+              <div class="student-info">
+                <h4>{{ toppers[2].name }}</h4>
+                <p class="score">{{ toppers[2].score.toFixed(1) }}%</p>
+              </div>
+            </div>
+          </div>
+          }
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
